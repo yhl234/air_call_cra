@@ -1,15 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import {
-  List,
-  IconButton,
-  Switch,
-  FormControlLabel,
-  Grid,
-  Fab,
-  Stack,
-  Item,
-} from '@mui/material';
+import { List, Switch, FormControlLabel, Grid, Fab } from '@mui/material';
 import { Autorenew } from '@mui/icons-material';
 
 import ActivityItem from './ActivityItem';
@@ -22,12 +13,15 @@ const Activity = () => {
   const [activities, setActivities] = useState([]);
   const [showAll, setShowAll] = useState(false);
   const [openDetail, setDetailOpen] = React.useState(false);
+  const [detailId, setDetailId] = React.useState(false);
 
-  const handleDetailsOpen = () => {
+  const handleDetailsOpen = id => {
     setDetailOpen(true);
+    setDetailId(id);
   };
   const handleDetailsClose = () => {
     setDetailOpen(false);
+    setDetailId(null);
   };
 
   const getActivities = async () => {
@@ -55,7 +49,7 @@ const Activity = () => {
   };
   const resetActivities = async () => {
     try {
-      const result = await axios.get('https://aircall-job.herokuapp.com/reset');
+      await axios.get('https://aircall-job.herokuapp.com/reset');
     } catch (error) {
       console.error(error);
     } finally {
@@ -66,12 +60,7 @@ const Activity = () => {
   if (!activities || activities.length === 0) return null;
   return (
     <>
-      <Grid
-        container
-        direction="column"
-        justifyContent="space-between"
-        // alignItems="flex-end"
-      >
+      <Grid container direction="column" justifyContent="space-between">
         <Grid item container justifyContent="flex-end">
           <FormControlLabel
             control={
@@ -111,7 +100,7 @@ const Activity = () => {
                   via={via}
                   showAll={showAll}
                   updateCall={updateCall}
-                  openDetail={handleDetailsOpen}
+                  openDetail={() => handleDetailsOpen(id)}
                 />
               );
             })}
@@ -124,7 +113,11 @@ const Activity = () => {
         </Grid>
       </Grid>
 
-      <ActivityDetails open={openDetail} handleClose={handleDetailsClose} />
+      <ActivityDetails
+        open={openDetail}
+        handleClose={handleDetailsClose}
+        id={detailId}
+      />
     </>
   );
 };

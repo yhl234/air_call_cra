@@ -13,9 +13,7 @@ import CallAvatar from './CallAvatar';
 const ActivityItem = ({
   id,
   type,
-  createdAt,
   direction,
-  duration,
   from,
   isArchived,
   to,
@@ -54,13 +52,13 @@ export default ActivityItem;
 ActivityItem.propTypes = {
   id: PropTypes.number,
   type: PropTypes.string,
-  createdAt: PropTypes.string,
+  // createdAt: PropTypes.string,
   direction: PropTypes.string,
-  duration: PropTypes.string,
+  // duration: PropTypes.string,
   from: PropTypes.string,
   isArchived: PropTypes.bool,
   to: PropTypes.string,
-  showAll: PropTypes.func,
+  showAll: PropTypes.bool,
   updateCall: PropTypes.func,
   openDetail: PropTypes.func,
 };

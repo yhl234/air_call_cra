@@ -1,16 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Typography,
 } from '@mui/material';
+import axios from 'axios';
 
-const ActivityDetails = ({ open, handleClose }) => {
+const ActivityDetails = ({ id, open, handleClose }) => {
+  useEffect(async () => {
+    if (!id) return;
+    try {
+      const result = await axios.get(
+        `https://aircall-job.herokuapp.com/activities/${id}`
+      );
+      setActivity(result.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [id]);
+
+  const [activity, setActivity] = useState(null);
+  let context = null;
+  if (!activity) {
+    context = <>Not found</>;
+  } else {
+    const { type, createdAt, direction, duration, from, isArchived, to, via } =
+      activity;
+    context = (
+      <>
+        <Typography>{createdAt}</Typography>
+        <Typography>
+          {type} - {direction}
+        </Typography>
+        <Typography>form: {from}</Typography>
+        <Typography>to: {to}</Typography>
+        <Typography>
+          via: {via} - {duration}
+        </Typography>
+        <Typography>duration: {duration}</Typography>
+      </>
+    );
+  }
+
   return (
     <>
       {/* <div>{id}</div>
@@ -24,19 +59,10 @@ const ActivityDetails = ({ open, handleClose }) => {
 			<div>{via}</div> */}
       {/* <button>archive</button> */}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle />
+        <DialogTitle>Call Details</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
-          </DialogContentText>
+          <DialogContentText>{context}</DialogContentText>
         </DialogContent>
-        {/* <DialogActions>
-					<Button onClick={handleClose}>Disagree</Button>
-					<Button onClick={handleClose} autoFocus>
-						Agree
-					</Button>
-				</DialogActions> */}
       </Dialog>
     </>
   );
@@ -44,7 +70,7 @@ const ActivityDetails = ({ open, handleClose }) => {
 
 export default ActivityDetails;
 ActivityDetails.propTypes = {
-  // id: PropTypes.number,
+  id: PropTypes.number,
   // type: PropTypes.string,
   // // createdAt: PropTypes.string,
   // direction: PropTypes.string,
@@ -57,12 +83,3 @@ ActivityDetails.propTypes = {
   open: PropTypes.bool,
   handleClose: PropTypes.func,
 };
-// id,
-// call_type: type,
-// created_at: createdAt,
-// direction,
-// duration,
-// from,
-// is_archived: isArchived,
-// to,
-// via,
