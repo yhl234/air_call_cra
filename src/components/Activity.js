@@ -2,7 +2,6 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { List, Switch, FormControlLabel, Grid, Fab } from '@mui/material';
 import { Autorenew } from '@mui/icons-material';
-
 import ActivityItem from './ActivityItem';
 import ActivityDetails from './ActivityDetails';
 
@@ -12,8 +11,8 @@ const Activity = () => {
   }, []);
   const [activities, setActivities] = useState([]);
   const [showAll, setShowAll] = useState(false);
-  const [openDetail, setDetailOpen] = React.useState(false);
-  const [detailId, setDetailId] = React.useState(false);
+  const [openDetail, setDetailOpen] = useState(false);
+  const [detailId, setDetailId] = useState(0);
 
   const handleDetailsOpen = id => {
     setDetailOpen(true);
@@ -60,7 +59,12 @@ const Activity = () => {
   if (!activities || activities.length === 0) return null;
   return (
     <>
-      <Grid container direction="column" justifyContent="space-between">
+      <Grid
+        container
+        direction="column"
+        justifyContent="space-between"
+        minHeight="530px"
+      >
         <Grid item container justifyContent="flex-end">
           <FormControlLabel
             control={
@@ -72,7 +76,7 @@ const Activity = () => {
             label="Show Archives"
           />
         </Grid>
-        <Grid item>
+        <Grid item flex="1 0">
           <List>
             {activities.map(a => {
               const {
@@ -88,7 +92,7 @@ const Activity = () => {
               } = a;
               return (
                 <ActivityItem
-                  key={id}
+                  key={`${id}`}
                   id={id}
                   type={type}
                   createdAt={createdAt}
@@ -106,7 +110,14 @@ const Activity = () => {
             })}
           </List>
         </Grid>
-        <Grid item container justifyContent="flex-end">
+        <Grid
+          item
+          container
+          justifyContent="flex-end"
+          flex="0 0"
+          position="sticky"
+          bottom="20px"
+        >
           <Fab color="primary" size="small" onClick={resetActivities}>
             <Autorenew />
           </Fab>

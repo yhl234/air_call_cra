@@ -30,5 +30,7 @@ module.exports = {
     'react/no-unused-prop-types': 1,
     'react/prop-types': 1,
     'no-unused-vars': 1,
+    'react/no-array-index-key': 0,
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
   },
 };

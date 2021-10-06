@@ -8,7 +8,17 @@ import {
   ListItemAvatar,
 } from '@mui/material';
 import { Archive, AddBox } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
 import CallAvatar from './CallAvatar';
+
+const Item = styled(ListItem)(({ theme }) => ({
+  margin: '3px 0',
+  borderRadius: '15px',
+  '&:hover': {
+    cursor: 'pointer',
+    background: theme.palette.grey[300],
+  },
+}));
 
 const ActivityItem = ({
   id,
@@ -27,7 +37,7 @@ const ActivityItem = ({
   };
   if (isArchived && !showAll) return null;
   return (
-    <ListItem
+    <Item
       secondaryAction={
         <IconButton
           edge="end"
@@ -43,7 +53,7 @@ const ActivityItem = ({
         <CallAvatar type={type} direction={direction} />
       </ListItemAvatar>
       <ListItemText primary={from || 'Unknown'} secondary={to || 'Unknown'} />
-    </ListItem>
+    </Item>
   );
 };
 

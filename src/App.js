@@ -1,30 +1,22 @@
 import React from 'react';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-// import BottomNav from './components/BottomNav';
 import Header from './components/Header';
 import Activity from './components/Activity';
 
 const App = () => (
   <div className="container">
+    <Header />
     <div className="container-view">
-      <Header />
       <Router>
         <Switch>
           <Route path="/activity" exact>
             <Activity />
           </Route>
-          {/* <Route path="/archive" exact>
-            <About />
-          </Route>
-          <Route path="/" exact>
-            <Home />
-          </Route> */}
           <Route path="*">
             <Activity />
           </Route>
         </Switch>
-        {/* <BottomNav /> */}
       </Router>
     </div>
   </div>

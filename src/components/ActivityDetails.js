@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Typography,
-} from '@mui/material';
+import { Dialog, DialogTitle, Typography, Avatar, Grid } from '@mui/material';
 import axios from 'axios';
+import { styled } from '@mui/material/styles';
+
+import CallAvatarText from './CallAvatarText';
+
+const DialogBody = styled(Grid)(({ theme }) => ({
+  padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
+  minHeight: '350px',
+  maxHeight: '350px',
+  maxWidth: '250px',
+  minWidth: '250px',
+}));
 
 const ActivityDetails = ({ id, open, handleClose }) => {
   useEffect(async () => {
-    if (!id) return;
+    if (!id || id === 0) return;
     try {
       const result = await axios.get(
         `https://aircall-job.herokuapp.com/activities/${id}`
@@ -28,58 +34,85 @@ const ActivityDetails = ({ id, open, handleClose }) => {
   if (!activity) {
     context = <>Not found</>;
   } else {
-    const { type, createdAt, direction, duration, from, isArchived, to, via } =
-      activity;
+    const {
+      call_type: type,
+      created_at: createdAt,
+      direction,
+      duration,
+      from,
+      to,
+      via,
+    } = activity;
+    const startedDate = moment(createdAt).format('YYYY/MM/DD');
+    const startedTime = moment(createdAt).format('hh:mm:ss');
+    const minuets = +duration / 60;
     context = (
       <>
-        <Typography>{createdAt}</Typography>
-        <Typography>
-          {type} - {direction}
-        </Typography>
-        <Typography>form: {from}</Typography>
-        <Typography>to: {to}</Typography>
-        <Typography>
-          via: {via} - {duration}
-        </Typography>
-        <Typography>duration: {duration}</Typography>
+        <DialogBody
+          container
+          direction="column"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Grid
+            item
+            container
+            direction="column"
+            alignItems="center"
+            flex="0 0"
+          >
+            <Avatar alt={from || 'Unknown'} />
+          </Grid>
+          <Grid
+            item
+            container
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            flex="1 0"
+          >
+            <Typography>{from || 'Unknown'}</Typography>
+            <CallAvatarText type={type} direction={direction} />
+            <Typography>{to || 'Unknown'}</Typography>
+            <Typography variant="caption" display="block" gutterBottom>
+              @{via || 'Unknown'}
+            </Typography>
+          </Grid>
+          <Grid
+            item
+            container
+            direction="column"
+            alignItems="center"
+            flex="0 0"
+          >
+            <Typography variant="overline" display="block" gutterBottom>
+              {type} - {direction}
+            </Typography>
+            <Typography>{startedDate}</Typography>
+            <Typography>{`${startedTime} - ${minuets} mins`}</Typography>
+          </Grid>
+        </DialogBody>
       </>
     );
   }
 
   return (
     <>
-      {/* <div>{id}</div>
-			<div>{type}</div>
-			<div>{createdAt}</div>
-			<div>{direction}</div>
-			<div>{duration}</div>
-			<div>{from}</div>
-			<div>{isArchived}</div>
-			<div>{to}</div>
-			<div>{via}</div> */}
-      {/* <button>archive</button> */}
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog maxWidth="sm" scroll="paper" open={open} onClose={handleClose}>
         <DialogTitle>Call Details</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{context}</DialogContentText>
-        </DialogContent>
+        {/* <div>
+          <div>{context}</div>
+        </div> */}
+        {context}
       </Dialog>
     </>
   );
 };
 
 export default ActivityDetails;
+
 ActivityDetails.propTypes = {
   id: PropTypes.number,
-  // type: PropTypes.string,
-  // // createdAt: PropTypes.string,
-  // direction: PropTypes.string,
-  // duration: PropTypes.string,
-  // from: PropTypes.string,
-  // // isArchived: PropTypes.bool,
-  // to: PropTypes.string,
-  // via: PropTypes.string,
-
   open: PropTypes.bool,
   handleClose: PropTypes.func,
 };
